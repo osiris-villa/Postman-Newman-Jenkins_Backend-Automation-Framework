@@ -1,0 +1,510 @@
+{
+	"info": {
+		"_postman_id": "456559ea-e985-4a24-9499-5ca24f15fee1",
+		"name": "OsirisVilla_GraphqlWorkshop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "addProject",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3706300c-d9b6-4dde-8f94-c839ba198696",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let project_id = jsonData.data.addProject.id;",
+							"let project_name = jsonData.data.addProject.name;",
+							"",
+							"pm.environment.set(\"project_id\", project_id);",
+							"pm.environment.set(\"project_name\", project_name);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verify name is correct\", function () {",
+							"    pm.expect(project_name).to.equal(pm.environment.get(\"project_name\"));",
+							"});",
+							"",
+							"pm.test(\"Verify project id is correct\", function () {",
+							"    pm.expect(project_id).to.equal(pm.environment.get(\"project_id\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "QA2020",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation addProject($project:ProjectInput!){\n    addProject(project:$project){\n        id\n        name\n    }\n}",
+						"variables": "{\n\t\"project\": {\n\t\t\"name\" : \"Project_OsirisVilla\"\n\t}\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addTodo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a28e0cc0-dfeb-4b25-b9ae-f0afcbb803bd",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let todo_id = jsonData.data.addTodo.id;",
+							"let todo = jsonData.data.addTodo.todo;",
+							"",
+							"pm.environment.set(\"todo_id\", todo_id);",
+							"pm.environment.set(\"todo_name\", todo);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verify todo was created\", function () {",
+							"    pm.expect(todo).to.equal(pm.environment.get(\"todo_name\"));",
+							"});",
+							"",
+							"pm.test(\"Verify todo id is correct\", function () {",
+							"    pm.expect(todo_id).to.equal(pm.environment.get(\"todo_id\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation addTodo($todo:TodoInput!){\n    addTodo(todo:$todo){\n        id,\n        todo,\n        status\n    }\n    \n}",
+						"variables": "{\n\t\"todo\" : {\n\t\t\"todo\" : \"My new task\",\n\t\t\"projectId\" : \"{{project_id}}\"\n\t}\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateTodo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fade60e8-2490-41f9-b392-1de59501b06d",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let updated_todo_name = jsonData.data.updateTodo.todo;",
+							"",
+							"pm.environment.set(\"updated_todo_name\", updated_todo_name);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verify todo name was updated\", function () {",
+							"    pm.expect(updated_todo_name).to.equal(pm.environment.get(\"updated_todo_name\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation updateTodo ($todoId:ID!, $todo:String!) {\n    updateTodo (todoId:$todoId, todo:$todo) {\n        id,\n        todo\n        status\n    }\n}",
+						"variables": "{\n\t\"todoId\" : \"{{todo_id}}\",\n\t\"todo\" : \"Updated task!\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addComment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1e8e4254-c3d3-4bb6-8055-0868d67b92cc",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let comment_in_todo = jsonData.data.addComment.text;",
+							"",
+							"pm.environment.set(\"comment_in_todo\", comment_in_todo);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verify text in comment is correct\", function () {",
+							"    pm.expect(comment_in_todo).to.equal(pm.environment.get(\"comment_in_todo\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation addComment($comment:CommentInput!) {\n    addComment(comment:$comment){\n        id,\n        text\n    }\n}",
+						"variables": "{\n\t\"comment\" : {\n\t\t\"text\" : \"My new Comment\",\n\t\t\"todoId\" : \"{{todo_id}}\"\n\t}\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addSecondComment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "307f294e-27e7-4fb1-b4c6-8371345121b3",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let second_comment = jsonData.data.addComment.text;",
+							"let second_comment_id = jsonData.data.addComment.id;",
+							"",
+							"pm.environment.set(\"second_comment\", second_comment);",
+							"pm.environment.set(\"second_comment_id\", second_comment_id);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verify text in comment is correct\", function () {",
+							"    pm.expect(second_comment).to.equal(pm.environment.get(\"second_comment\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation addComment($comment:CommentInput!) {\n    addComment(comment:$comment){\n        id,\n        text\n    }\n}",
+						"variables": "{\n\t\"comment\" : {\n\t\t\"text\" : \"My second Comment\",\n\t\t\"todoId\" : \"{{todo_id}}\"\n\t}\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteComment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8470bedb-ab7a-4bf9-b9e0-2813a2e88673",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let isCommentDeleted = jsonData.data.deleteComment;",
+							"",
+							"pm.test(\"Verify second comment was deleted\", function () {",
+							"    pm.expect(isCommentDeleted).to.be.true;",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation deleteComment($commentId:ID!) {\n    deleteComment(commentId:$commentId)\n}",
+						"variables": "{\n\t\"commentId\" : \"{{second_comment_id}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateTodoCompleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "adef7c1a-b3cd-4e4d-b6fc-2f33b0c06758",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let status_todo = jsonData.data.updateTodo.status;",
+							"",
+							"pm.environment.set(\"status_todo\", status_todo);",
+							"",
+							"pm.test(\"Verify todo status changed to complete\", function () {",
+							"    pm.expect(status_todo).to.equal(pm.environment.get(\"status_todo\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation updateTodo ($todoId:ID!, $status:Status!) {\n    updateTodo (todoId:$todoId, status:$status) {\n        id,\n        todo\n        status\n    }\n}",
+						"variables": "{\n\t\"todoId\" : \"{{todo_id}}\",\n\t\"status\" : \"COMPLETED\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listTodosCompleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cab189bb-8cc9-46eb-aa8c-69cbdbcf806e",
+						"exec": [
+							"",
+							"pm.test(\"Verify todo completed is listed\", function () {",
+							"   pm.expect(pm.response.text()).to.include(pm.environment.get(\"updated_todo_name\"));",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query listTodos($projectId:ID!, $showCompleted:Boolean!) {\n    listTodos (projectId:$projectId, showCompleted:$showCompleted) {\n        todo\n        status\n    }\n}",
+						"variables": "{\n\t\"projectId\" : \"{{project_id}}\",\n\t\"showCompleted\" : true\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listtodosNOTCompleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c8b677bb-9636-4056-9eea-dd9399feb294",
+						"exec": [
+							"",
+							"pm.test(\"Verify todo completed is NOT listed\", function () {",
+							"   pm.expect(pm.response.text()).to.not.include(pm.environment.get(\"updated_todo_name\"));",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query listTodos($projectId:ID!, $showCompleted:Boolean!) {\n    listTodos (projectId:$projectId, showCompleted:$showCompleted) {\n        todo\n        status\n    }\n}",
+						"variables": "{\n\t\"projectId\" : \"{{project_id}}\",\n\t\"showCompleted\" : false\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteProject",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dfd05380-be2b-4dcf-a091-a775ebcfa715",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let isProjectDeleted = jsonData.data.deleteProject;",
+							"",
+							"pm.test(\"Verify project was deleted\", function () {",
+							"    pm.expect(isProjectDeleted).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation deleteProject($projectId:ID!){\n    deleteProject(projectId:$projectId)\n}",
+						"variables": "{\n\t\"projectId\" : \"{{project_id}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getDeletedProject",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "acc71e41-6ef1-43fb-84b5-7cc7b557f1e8",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let checkProject = jsonData.data.project;",
+							"",
+							"pm.test(\"Verify project is null\", function () {",
+							"    pm.expect(checkProject).to.be.null;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query project ($id:ID!) {\n    project (id:$id) {\n        id,\n        name\n    }\n}",
+						"variables": "{\n\t\"id\" : \"{{project_id}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "QA2020",
+				"type": "string"
+			}
+		]
+	},
+	"protocolProfileBehavior": {}
+}

@@ -1,0 +1,73 @@
+directive @cacheControl(
+  maxAge: Int
+  scope: CacheControlScope
+) on FIELD_DEFINITION | OBJECT | INTERFACE
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+type Comment {
+  id: ID!
+  text: String!
+  todo: Todo!
+}
+
+input CommentInput {
+  text: String!
+  todoId: ID!
+}
+
+type Mutation {
+  addProject(project: ProjectInput!): Project!
+  addTodo(todo: TodoInput!): Todo!
+  addComment(comment: CommentInput!): Comment
+  completeTodo(id: ID!): Boolean!
+  updateProject(projectId: ID!, name: String!): Project!
+  updateTodo(todoId: ID!, todo: String, status: Status): Todo!
+  updateComment(commentId: ID!, text: String!): Comment!
+  deleteProject(projectId: ID!): Boolean!
+  deleteTodo(todoId: ID!): Boolean!
+  deleteComment(commentId: ID!): Boolean!
+}
+
+type Project {
+  id: ID!
+  name: String!
+  todos: [Todo]
+}
+
+input ProjectInput {
+  name: String!
+}
+
+type Query {
+  project(id: ID!): Project
+  todo(id: ID!): Todo
+  listProjects: [Project]
+  listTodos(projectId: ID, showCompleted: Boolean): [Todo]
+  listComments(todoId: ID!): [Comment]
+}
+
+enum Status {
+  PENDING
+  COMPLETED
+}
+
+type Todo {
+  id: ID!
+  todo: String!
+  status: Status!
+  project: Project!
+  comments: [Comment]
+}
+
+input TodoInput {
+  todo: String!
+  projectId: ID!
+}
+
+# The `Upload` scalar type
+ represents a file upload.
+scalar Upload
+
